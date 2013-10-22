@@ -1,0 +1,26 @@
+----------------------------------------
+Begin PBS Prologue Wed Oct 16 21:44:59 EDT 2013 1381974299
+Job ID:		5154[72].hades
+Username:	gulcehre
+Group:		lisa
+Nodes:		ngpu-a4-08
+End PBS Prologue Wed Oct 16 21:45:00 EDT 2013 1381974300
+----------------------------------------
+book_unstarted_dct retrieved,  Dict{u'final_mom': 0.42921524461929, u'jobman.experiment': u'powconvnet.train_pow.experiment', u'W_lr_scaler': 0.0811130830789687, u'jobman.sql.priority': 1.0, u'init_mom': 0.330327826444243, u'yaml_string': u'!obj:pylearn2.train.Train {\n    dataset: &train !obj:pylearn2.datasets.mnist.MNIST {\n        which_set: \'train\',\n        one_hot: 1,\n        start: 0,\n        stop: 40000,\n    },\n    model: !obj:pylearn2.models.mlp.MLP {\n        batch_size: 128,\n        layers: [\n                !obj:pylearn2.models.powerup.Powerup {\n                     layer_name: \'h0\',\n                     num_units: %(powerup_nunits)i,\n                     num_pieces: %(powerup_npieces)i,\n                     post_bias: True,\n                     W_lr_scale: %(W_lr_scale)f,\n                     p_lr_scale: %(p_lr_scale)f,\n                     max_col_norm: %(max_col_norm)f,\n                     batch_size: 128,\n                     irange: .005,\n                 },\n                 !obj:pylearn2.models.mlp.Softmax {\n                     max_col_norm: %(max_col_norm2)f,\n                     layer_name: \'y\',\n                     n_classes: 10,\n                     irange: .005\n                 }\n                ],\n        nvis: 784\n    },\n    algorithm: !obj:pylearn2.training_algorithms.sgd.SGD {\n        learning_rate: %(lr_rate)f,\n        init_momentum: %(init_mom)f,\n        monitoring_dataset:\n            {\n                \'train\' : *train,\n                \'valid\' : !obj:pylearn2.datasets.mnist.MNIST {\n                              which_set: \'train\',\n                              one_hot: 1,\n                              start: 50000,\n                              stop: 60000\n                          },\n                \'test\' : !obj:pylearn2.datasets.mnist.MNIST {\n                              which_set: \'test\',\n                              one_hot: 1,\n                          }\n            },\n        cost: !obj:pylearn2.costs.cost.SumOfCosts { \n            costs: [\n                !obj:pylearn2.costs.cost.MethodCost {\n                    method: \'cost_from_X\'\n                },\n                !obj:pylearn2.models.mlp.WeightDecay {\n                    coeffs: [ %(l2_pen)f, %(l2_pen2)f ]\n                }\n            ],\n        },\n       termination_criterion: !obj:pylearn2.termination_criteria.MonitorBased {\n            channel_name: "valid_y_misclass",\n            prop_decrease: 0.,\n            N: 100\n        },\n    },\n    extensions: [\n        !obj:pylearn2.train_extensions.best_params.MonitorBasedSaveBest {\n             channel_name: \'valid_y_misclass\',\n             save_path: "%(save_path)sbest.pkl"\n        },\n        !obj:pylearn2.training_algorithms.sgd.MomentumAdjustor {\n            start: 1,\n            saturate: 250,\n            final_momentum: %(final_mom)f\n        },\n        !obj:pylearn2.training_algorithms.sgd.LinearDecayOverEpoch {\n            start: 1,\n            saturate: 250,\n            decay_factor: %(decay_factor)f\n        }\n    ],\n    save_path: "%(save_path)slast.pkl",\n    save_freq: 5\n}\n', u'powerup_npieces': 5, u'jobman.hash': 151931356157386531, u'l2_pen2': 0.000332564700819036, u'decay_factor': 0.332184531175547, u'l2_pen': 8.67705841227498e-06, u'jobman.status': 0, u'save_path': u'./Z6juGpa_', u'p_lr_scaler': 0.0585702081805667, u'lr_rate': 0.00242012826479438, u'powerup_nunits': 360}
+Selected job id=64 in table=powerup_mnist_1layer in db=gulcehrc_db
+----------------------------------------
+Begin PBS Epilogue Wed Oct 16 21:45:33 EDT 2013 1381974333
+Job ID:		5154[72].hades
+Username:	gulcehre
+Group:		lisa
+Job Name:	dbi_3335f40920a-72
+Session:	3691
+Limits:		neednodes=1:ppn=1,nodes=1:ppn=1,walltime=47:59:59
+Resources:	cput=00:00:05,mem=186064kb,vmem=46826724kb,walltime=00:00:29
+Queue:		courte
+Account:		
+Nodes:	ngpu-a4-08
+Killing leftovers...
+
+End PBS Epilogue Wed Oct 16 21:45:33 EDT 2013 1381974333
+----------------------------------------

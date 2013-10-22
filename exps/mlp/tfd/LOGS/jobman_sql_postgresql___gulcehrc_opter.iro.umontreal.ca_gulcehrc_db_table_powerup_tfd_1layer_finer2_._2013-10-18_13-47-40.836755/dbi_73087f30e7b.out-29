@@ -1,0 +1,26 @@
+----------------------------------------
+Begin PBS Prologue Fri Oct 18 13:48:19 EDT 2013 1382118499
+Job ID:		5187[29].hades
+Username:	gulcehre
+Group:		lisa
+Nodes:		ngpu-a4-08
+End PBS Prologue Fri Oct 18 13:48:19 EDT 2013 1382118499
+----------------------------------------
+No more jobs to run (run 0 jobs)
+----------------------------------------
+Begin PBS Epilogue Fri Oct 18 13:48:30 EDT 2013 1382118510
+Job ID:		5187[29].hades
+Username:	gulcehre
+Group:		lisa
+Job Name:	dbi_73087f30e7b-29
+Session:	22412
+Limits:		neednodes=1:ppn=1,nodes=1:ppn=1,walltime=47:59:59
+Resources:	cput=00:00:00,mem=0kb,vmem=0kb,walltime=00:00:06
+Queue:		courte
+Account:		
+Nodes:	ngpu-a4-08
+Killing leftovers...
+ngpu-a4-08:	Can't open /etc/security/access.conf: No such file or directory.
+
+End PBS Epilogue Fri Oct 18 13:48:30 EDT 2013 1382118510
+----------------------------------------

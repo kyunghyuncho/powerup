@@ -1,0 +1,18 @@
+#TODO: use the priority field, not the status.
+#TODO: ignore entries with key PUSH_ERROR.
+/RQusagers/gulcehre/.local/lib/python2.7/site-packages/scikits/__init__.py:1: UserWarning: Module theano was already imported from /RQusagers/gulcehre/libs/pylibs/Theano/theano/__init__.pyc, but /home/gulcehre/.local/lib/python2.7/site-packages is being added to sys.path
+Using gpu device 4: GeForce GTX 580
+WARNING: 'lockfile' utility apparently not available, so 'jobman cachesync' will be unsafe (might cause corruption if called around the time the job ends).
+WARNING: 'lockfile' utility apparently not available, so 'jobman cachesync' will be unsafe (might cause corruption if called around the time the job ends).
+INFO (theano.gof.compilelock): Waiting for existing lock by unknown process (I am process '27493')
+INFO (theano.gof.compilelock): To manually release the lock, delete /tmp/gulcehre/.theano/compiledir_Linux-2.6.32-131.0.15.el6.x86_64-x86_64-with-redhat-6.1-Carbon-x86_64-2.7.2-64/lock_dir
+INFO (theano.gof.compilelock): Waiting for existing lock by process '27430' (I am process '27493')
+INFO (theano.gof.compilelock): To manually release the lock, delete /tmp/gulcehre/.theano/compiledir_Linux-2.6.32-131.0.15.el6.x86_64-x86_64-with-redhat-6.1-Carbon-x86_64-2.7.2-64/lock_dir
+INFO (theano.gof.compilelock): Waiting for existing lock by process '27430' (I am process '27493')
+INFO (theano.gof.compilelock): To manually release the lock, delete /tmp/gulcehre/.theano/compiledir_Linux-2.6.32-131.0.15.el6.x86_64-x86_64-with-redhat-6.1-Carbon-x86_64-2.7.2-64/lock_dir
+INFO (theano.gof.compilelock): Waiting for existing lock by process '27413' (I am process '27493')
+INFO (theano.gof.compilelock): To manually release the lock, delete /tmp/gulcehre/.theano/compiledir_Linux-2.6.32-131.0.15.el6.x86_64-x86_64-with-redhat-6.1-Carbon-x86_64-2.7.2-64/lock_dir
+INFO (theano.gof.compilelock): Waiting for existing lock by process '27413' (I am process '27493')
+INFO (theano.gof.compilelock): To manually release the lock, delete /tmp/gulcehre/.theano/compiledir_Linux-2.6.32-131.0.15.el6.x86_64-x86_64-with-redhat-6.1-Carbon-x86_64-2.7.2-64/lock_dir
+WARNING: 'lockfile' utility apparently not available, so 'jobman cachesync' will be unsafe (might cause corruption if called around the time the job ends).
+WARNING: 'lockfile' utility apparently not available, so 'jobman cachesync' will be unsafe (might cause corruption if called around the time the job ends).

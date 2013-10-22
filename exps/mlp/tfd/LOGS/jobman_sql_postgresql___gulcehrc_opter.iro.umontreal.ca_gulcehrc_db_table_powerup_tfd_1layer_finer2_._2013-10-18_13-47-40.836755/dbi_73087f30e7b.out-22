@@ -1,0 +1,30 @@
+----------------------------------------
+Begin PBS Prologue Fri Oct 18 13:48:17 EDT 2013 1382118498
+Job ID:		5187[22].hades
+Username:	gulcehre
+Group:		lisa
+Nodes:		ngpu-a4-06
+End PBS Prologue Fri Oct 18 13:48:18 EDT 2013 1382118498
+----------------------------------------
+book_unstarted_dct retrieved,  Dict{u'final_mom': 1.39082873618406, u'decay_factor': 0.0233471881198462, u'jobman.experiment': u'powconvnet.train_pow.experiment', u'max_col_norm2': 1.8365, u'init_mom': 0.495357601848445, u'yaml_string': u'!obj:pylearn2.train.Train {\n    dataset: &train !obj:pylearn2.datasets.tfd.TFD {\n        which_set: \'train\',\n        one_hot: 1,\n        center: 1,\n        preprocessor: !obj:pylearn2.datasets.preprocessing.Pipeline {\n            items: [ \n                       !obj:pylearn2.datasets.preprocessing.GlobalContrastNormalization {}\n                   ]\n        }\n    },\n    model: !obj:pylearn2.models.mlp.MLP {\n        batch_size: 128,\n        layers: [\n                !obj:pylearn2.models.powerup.Powerup {\n                     layer_name: \'h0\',\n                     num_units: %(powerup_nunits)i,\n                     num_pieces: %(powerup_npieces)i,\n                     post_bias: True,\n                     W_lr_scale: %(W_lr_scale)f,\n                     p_lr_scale: %(p_lr_scale)f,\n                     max_col_norm: %(max_col_norm)f,\n                     batch_size: 128,\n                     irange: .005,\n                 },\n                 !obj:pylearn2.models.mlp.Softmax {\n                     max_col_norm: %(max_col_norm2)f,\n                     layer_name: \'y\',\n                     n_classes: 10,\n                     irange: .005\n                 }\n                ],\n        nvis: 2304\n    },\n    algorithm: !obj:pylearn2.training_algorithms.sgd.SGD {\n        learning_rate: %(lr_rate)f,\n        init_momentum: %(init_mom)f,\n        monitoring_dataset:\n            {\n                \'train\' : *train,\n                \'valid\' : !obj:pylearn2.datasets.tfd.TFD {\n                              which_set: \'valid\',\n                              one_hot: 1,\n                              center: 1,\n                              preprocessor: !obj:pylearn2.datasets.preprocessing.Pipeline {\n                                  items: [\n                                       !obj:pylearn2.datasets.preprocessing.GlobalContrastNormalization {}\n                                   ]\n                              }\n                          },\n                \'test\' : !obj:pylearn2.datasets.tfd.TFD {\n                              which_set: \'test\',\n                              one_hot: 1,\n                              center: 1,\n                              preprocessor: !obj:pylearn2.datasets.preprocessing.Pipeline {\n                                  items: [\n                                       !obj:pylearn2.datasets.preprocessing.GlobalContrastNormalization {}\n                                   ]\n                              }\n                          }\n            },\n        cost: !obj:pylearn2.costs.cost.SumOfCosts { \n            costs: [\n                !obj:pylearn2.costs.cost.MethodCost {\n                    method: \'cost_from_X\'\n                },\n                !obj:pylearn2.models.mlp.WeightDecay {\n                    coeffs: [ %(l2_pen)f, %(l2_pen2)f ]\n                }\n            ],\n        },\n       termination_criterion: !obj:pylearn2.termination_criteria.MonitorBased {\n            channel_name: "valid_y_misclass",\n            prop_decrease: 0.,\n            N: 100\n        },\n    },\n    extensions: [\n        !obj:pylearn2.train_extensions.best_params.MonitorBasedSaveBest {\n             channel_name: \'valid_y_misclass\',\n             save_path: "%(save_path)sbest.pkl"\n        },\n        !obj:pylearn2.training_algorithms.sgd.MomentumAdjustor {\n            start: 1,\n            saturate: 250,\n            final_momentum: %(final_mom)f\n        },\n        !obj:pylearn2.training_algorithms.sgd.LinearDecayOverEpoch {\n            start: 1,\n            saturate: 250,\n            decay_factor: %(decay_factor)f\n        }\n    ],\n    save_path: "%(save_path)slast.pkl",\n    save_freq: 5\n}\n', u'powerup_npieces': 6, u'jobman.hash': -367570112289179159, u'l2_pen2': 0.0, u'p_lr_scale': 0.0137382379588326, u'l2_pen': 3.85907150443854e-06, u'max_col_norm': 1.9365, u'jobman.status': 0, u'W_lr_scale': 0.0489390091847749, u'save_path': u'./8DUp97P_', u'lr_rate': 0.385662042116347, u'powerup_nunits': 280, u'jobman.sql.priority': 1.0}
+caught exception (TransactionRollbackError) could not serialize access due to concurrent update
+ 'UPDATE powerup_tfd_1layer_finer2trial SET status=%(status)s WHERE powerup_tfd_1layer_finer2trial.id = %(powerup_tfd_1layer_finer2trial_id)s' {'status': 1, 'powerup_tfd_1layer_finer2trial_id': 13}
+another process stole our dct. Waiting 7.488968 secs
+waiting for 7 second
+No more jobs to run (run 0 jobs)
+----------------------------------------
+Begin PBS Epilogue Fri Oct 18 13:48:37 EDT 2013 1382118517
+Job ID:		5187[22].hades
+Username:	gulcehre
+Group:		lisa
+Job Name:	dbi_73087f30e7b-22
+Session:	29841
+Limits:		neednodes=1:ppn=1,nodes=1:ppn=1,walltime=47:59:59
+Resources:	cput=00:00:00,mem=36648kb,vmem=263936kb,walltime=00:00:15
+Queue:		courte
+Account:		
+Nodes:	ngpu-a4-06
+Killing leftovers...
+
+End PBS Epilogue Fri Oct 18 13:48:37 EDT 2013 1382118517
+----------------------------------------

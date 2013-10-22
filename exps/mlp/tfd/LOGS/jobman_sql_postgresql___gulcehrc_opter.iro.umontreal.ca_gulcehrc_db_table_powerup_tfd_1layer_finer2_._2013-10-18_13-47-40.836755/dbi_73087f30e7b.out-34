@@ -1,0 +1,25 @@
+----------------------------------------
+Begin PBS Prologue Fri Oct 18 13:48:20 EDT 2013 1382118500
+Job ID:		5187[34].hades
+Username:	gulcehre
+Group:		lisa
+Nodes:		ngpu-a4-09
+End PBS Prologue Fri Oct 18 13:48:20 EDT 2013 1382118500
+----------------------------------------
+No more jobs to run (run 0 jobs)
+----------------------------------------
+Begin PBS Epilogue Fri Oct 18 13:48:35 EDT 2013 1382118515
+Job ID:		5187[34].hades
+Username:	gulcehre
+Group:		lisa
+Job Name:	dbi_73087f30e7b-34
+Session:	28721
+Limits:		neednodes=1:ppn=1,nodes=1:ppn=1,walltime=47:59:59
+Resources:	cput=00:00:00,mem=35528kb,vmem=262896kb,walltime=00:00:10
+Queue:		courte
+Account:		
+Nodes:	ngpu-a4-09
+Killing leftovers...
+
+End PBS Epilogue Fri Oct 18 13:48:35 EDT 2013 1382118515
+----------------------------------------
