@@ -83,7 +83,6 @@ class Powerup(Layer):
                     for each maxout unit. This is equivalent to pooling over
                     rectified linear units.
         """
-
         detector_layer_dim = num_units * num_pieces
         pool_size = num_pieces
         self.normalize = normalize
@@ -442,7 +441,7 @@ class Powerup(Layer):
         z_pools = z.reshape((z.shape[0], self.num_units, self.pool_size))
 
         #pT = abs(T.log(abs(self.p.dimshuffle('x', 0, 'x'))))
-        pT = abs(self.p.dimshuffle('x', 0, 'x'))
+        pT = abs(self.p.dimshuffle('x', 0, 'x')) + 1
         #pT = T.exp(self.p.dimshuffle('x', 0, 'x'))
 
         if self.relu:
@@ -463,7 +462,7 @@ class Powerup(Layer):
         if self.use_exp:
             pT = T.exp(abs(power_in))
         else:
-            pT = abs(power_in)
+            pT = abs(power_in) + 1
 
         z_summed_pools = z_summed_pools**(1./pT)
 
