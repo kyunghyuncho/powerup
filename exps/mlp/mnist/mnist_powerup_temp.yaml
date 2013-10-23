@@ -6,17 +6,18 @@
         stop: 40000,
     },
     model: !obj:pylearn2.models.mlp.MLP {
-        batch_size: 128,
+        batch_size: %(batch_size)i,
         layers: [
                 !obj:pylearn2.models.powerup.Powerup {
                      layer_name: 'h0',
                      num_units: %(powerup_nunits)i,
                      num_pieces: %(powerup_npieces)i,
                      post_bias: True,
+                     normalize: True,
                      W_lr_scale: %(W_lr_scale)f,
                      p_lr_scale: %(p_lr_scale)f,
                      max_col_norm: %(max_col_norm)f,
-                     batch_size: 128,
+                     batch_size: %(batch_size)i,
                      irange: .005,
                  },
                  !obj:pylearn2.models.mlp.Softmax {

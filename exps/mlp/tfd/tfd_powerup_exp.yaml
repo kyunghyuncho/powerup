@@ -10,23 +10,36 @@
         }
     },
     model: !obj:pylearn2.models.mlp.MLP {
-        batch_size: %(batch_size)i,
+        batch_size: 64,
         layers: [
                 !obj:pylearn2.models.powerup.Powerup {
                      layer_name: 'h0',
-                     num_units: %(powerup_nunits)i,
-                     num_pieces: %(powerup_npieces)i,
+                     num_units: 120,
+                     num_pieces: 6,
+                     post_bias: True,
+                     normalize: True,
+                     p_mean: 0.1,
+                     W_lr_scale: 0.3,
+                     p_lr_scale: 0.8,
+                     max_col_norm: 1.9365,
+                     batch_size: 100,
+                     irange: .005,
+                 },
+                !obj:pylearn2.models.powerup.Powerup {
+                     layer_name: 'h1',
+                     num_units: 160,
+                     num_pieces: 4,
                      post_bias: True,
                      normalize: True,
                      p_mean: 1.0,
-                     W_lr_scale: %(W_lr_scale)f,
-                     p_lr_scale: %(p_lr_scale)f,
-                     max_col_norm: %(max_col_norm)f,
-                     batch_size: %(batch_size)i,
+                     W_lr_scale: 0.3,
+                     p_lr_scale: 0.8,
+                     max_col_norm: 1.9365,
+                     batch_size: 64,
                      irange: .005,
                  },
                  !obj:pylearn2.models.mlp.Softmax {
-                     max_col_norm: %(max_col_norm2)f,
+                     max_col_norm: 1.8935,
                      layer_name: 'y',
                      n_classes: 7,
                      irange: .005
@@ -35,8 +48,8 @@
         nvis: 2304
     },
     algorithm: !obj:pylearn2.training_algorithms.sgd.SGD {
-        learning_rate: %(lr_rate)f,
-        init_momentum: %(init_mom)f,
+        learning_rate: 0.2,
+        init_momentum: 0.5,
         monitoring_dataset:
             {
                 'train' : *train,
@@ -67,7 +80,7 @@
                     method: 'cost_from_X'
                 },
                 !obj:pylearn2.models.mlp.WeightDecay {
-                    coeffs: [ %(l2_pen)f, %(l2_pen2)f ]
+                    coeffs: [ 0.0001, 0.0002, 0.01 ]
                 }
             ],
         },
@@ -85,12 +98,12 @@
         !obj:pylearn2.training_algorithms.sgd.MomentumAdjustor {
             start: 1,
             saturate: 250,
-            final_momentum: %(final_mom)f
+            final_momentum: 0.6
         },
         !obj:pylearn2.training_algorithms.sgd.LinearDecayOverEpoch {
             start: 1,
             saturate: 250,
-            decay_factor: %(decay_factor)f
+            decay_factor: 0.01
         }
     ],
     save_path: "%(save_path)slast.pkl",

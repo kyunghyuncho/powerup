@@ -16,7 +16,9 @@ from pylearn2.utils import py_integer_types
 from pylearn2.utils import sharedX
 
 class Powerup(Layer):
-
+    """
+        Powerup layer.
+    """
     def __init__(self,
                  layer_name,
                  num_units,

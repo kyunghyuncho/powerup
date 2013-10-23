@@ -14,6 +14,8 @@ import logging
 import warnings
 import numpy as np
 
+from debugging import detect_nan
+
 from theano import config
 from theano import function
 from theano.compat.python2x import OrderedDict
@@ -104,7 +106,7 @@ class SGD(TrainingAlgorithm):
         if isinstance(cost, (list, tuple, set)):
             raise TypeError("SGD no longer supports using collections of Costs to represent "
                     " a sum of Costs. Use pylearn2.costs.cost.SumOfCosts instead.")
-
+        self.norm = None
         if init_momentum:
             warnings.warn("init_momentum interface is deprecated and will "
             "become officially unsuported as of May 9, 2014. Please use the "
@@ -250,8 +252,10 @@ class SGD(TrainingAlgorithm):
                     if param.name == mon_grad:
                         data_specs = model.get_monitoring_data_specs()
                         norm = T.sqrt(T.sum(T.sqr(grads[param])))
+                        self.norm = norm
+                        #norm_val = theano.function([
                         self.monitor.add_channel(name="%s_grad_norm" % mon_grad,
-                                                 ipt=None,
+                                                 ipt=theano_args,
                                                  val=norm,
                                                  data_specs=data_specs,
                                                  dataset=monitoring_dataset)
@@ -294,6 +298,10 @@ class SGD(TrainingAlgorithm):
                 if np.any(np.isnan(update_val)):
                     raise ValueError("debug value of %s contains nans" % update.name)
 
+        if True:
+                import theano
+                mode = theano.compile.MonitorMode(post_func=detect_nan)
+                self.theano_function_mode = mode
 
         with log_timing(log, 'Compiling sgd_update'):
             self.sgd_update = function(theano_args,
