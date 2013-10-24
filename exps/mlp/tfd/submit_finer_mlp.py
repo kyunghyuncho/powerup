@@ -39,7 +39,7 @@ def tfd(n_trials):
     max_col_norms = [1.8365, 1.9365, 2.1365, 2.2365, 2.3486]
 
     ind = 0
-    TABLE_NAME = "powerup_tfd_1layer_finer_large_2l_v2"
+    TABLE_NAME = "powerup_tfd_1layer_finer_large_2l_v3"
     db = api0.open_db('postgresql://gulcehrc@opter.iro.umontreal.ca/gulcehrc_db?table=' + TABLE_NAME)
 
     for i in xrange(n_trials):

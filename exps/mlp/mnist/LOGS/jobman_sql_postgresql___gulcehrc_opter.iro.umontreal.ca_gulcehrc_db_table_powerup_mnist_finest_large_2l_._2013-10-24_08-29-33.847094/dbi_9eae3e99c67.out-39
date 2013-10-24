@@ -1,0 +1,26 @@
+----------------------------------------
+Begin PBS Prologue Thu Oct 24 10:50:29 EDT 2013 1382626229
+Job ID:		5238[39].hades
+Username:	gulcehre
+Group:		lisa
+Nodes:		ngpu-a4-03
+End PBS Prologue Thu Oct 24 10:50:29 EDT 2013 1382626229
+----------------------------------------
+book_unstarted_dct retrieved,  Dict{u'powerup_nunits2': 200, u'p_lr_scale': 0.321293727397332, u'jobman.experiment': u'powconvnet.train_pow.experiment', u'jobman.sql.priority': 1.0, u'init_mom': 0.530029236758107, u'final_mom': 0.881533660202324, u'yaml_string': u'!obj:pylearn2.train.Train {\n    dataset: &train !obj:pylearn2.datasets.mnist.MNIST {\n        which_set: \'train\',\n        one_hot: 1,\n        start: 0,\n        stop: 40000,\n    },\n    model: !obj:pylearn2.models.mlp.MLP {\n        batch_size: 128,\n        layers: [\n                !obj:pylearn2.models.powerup.Powerup {\n                     layer_name: \'h0\',\n                     num_units: %(powerup_nunits)i,\n                     num_pieces: %(powerup_npieces)i,\n                     p_mean: 1.0,\n                     post_bias: True,\n                     normalize: True,\n                     W_lr_scale: %(W_lr_scale)f,\n                     p_lr_scale: %(p_lr_scale)f,\n                     max_col_norm: %(max_col_norm)f,\n                     batch_size: 128,\n                     irange: .005,\n                 },\n                !obj:pylearn2.models.powerup.Powerup {\n                     layer_name: \'h1\',\n                     num_units: %(powerup_nunits2)i,\n                     num_pieces: %(powerup_npieces2)i,\n                     post_bias: True,\n                     normalize: True,\n                     p_mean: 1.0,\n                     W_lr_scale: %(W_lr_scale)f,\n                     p_lr_scale: %(p_lr_scale)f,\n                     max_col_norm: %(max_col_norm)f,\n                     batch_size: 128,\n                     irange: .005,\n                 },\n                 !obj:pylearn2.models.mlp.Softmax {\n                     max_col_norm: 1.83965,\n                     layer_name: \'y\',\n                     n_classes: 10,\n                     irange: .005\n                 }\n                ],\n        nvis: 784\n    },\n    algorithm: !obj:pylearn2.training_algorithms.sgd.SGD {\n        learning_rate: %(lr_rate)f,\n        init_momentum: %(init_mom)f,\n        monitoring_dataset:\n            {\n                \'train\' : *train,\n                \'valid\' : !obj:pylearn2.datasets.mnist.MNIST {\n                              which_set: \'train\',\n                              one_hot: 1,\n                              start: 50000,\n                              stop: 60000\n                          },\n                \'test\' : !obj:pylearn2.datasets.mnist.MNIST {\n                              which_set: \'test\',\n                              one_hot: 1,\n                          }\n            },\n       cost: !obj:pylearn2.costs.mlp.dropout.Dropout {\n           input_include_probs: { \'h0\' : .5, \'h1\' : .5 },\n           input_scales: { \'h0\': 2., \'h1\': 2.}\n       },\n       termination_criterion: !obj:pylearn2.termination_criteria.MonitorBased {\n            channel_name: "valid_y_misclass",\n            prop_decrease: 0.,\n            N: 100\n        },\n    },\n    extensions: [\n        !obj:pylearn2.train_extensions.best_params.MonitorBasedSaveBest {\n             channel_name: \'valid_y_misclass\',\n             save_path: "%(save_path)sbest.pkl"\n        },\n        !obj:pylearn2.training_algorithms.sgd.MomentumAdjustor {\n            start: 1,\n            saturate: 250,\n            final_momentum: %(final_mom)f\n        },\n        !obj:pylearn2.training_algorithms.sgd.LinearDecayOverEpoch {\n            start: 1,\n            saturate: 250,\n            decay_factor: %(decay_factor)f\n        }\n    ],\n    save_path: "%(save_path)slast.pkl",\n    save_freq: 5\n}\n', u'powerup_npieces': 5, u'jobman.hash': -8447008281448536178, u'decay_factor': 0.00352471057615339, u'powerup_npieces2': 5, u'max_col_norm': 1.9365, u'jobman.status': 0, u'W_lr_scale': 0.274494009193626, u'save_path': u'./abcdefg_', u'lr_rate': 0.122379821996505, u'powerup_nunits': 200}
+Selected job id=40 in table=powerup_mnist_finest_large_2l in db=gulcehrc_db
+----------------------------------------
+Begin PBS Epilogue Thu Oct 24 12:29:46 EDT 2013 1382632186
+Job ID:		5238[39].hades
+Username:	gulcehre
+Group:		lisa
+Job Name:	dbi_9eae3e99c67-39
+Session:	27791
+Limits:		neednodes=1:ppn=1,nodes=1:ppn=1,walltime=47:59:59
+Resources:	cput=00:51:13,mem=1004120kb,vmem=48071528kb,walltime=01:39:14
+Queue:		courte
+Account:		
+Nodes:	ngpu-a4-03
+Killing leftovers...
+
+End PBS Epilogue Thu Oct 24 12:29:46 EDT 2013 1382632186
+----------------------------------------

@@ -1,3 +1,3 @@
 #!/bin/bash -x
 
-jobdispatch --repeat_jobs=140 --torque --gpu --env=THEANO_FLAGS=device=gpu,floatX=float32,force_device=True jobman sql 'postgresql://gulcehrc@opter.iro.umontreal.ca/gulcehrc_db?table=powerup_tfd_1layer_finer_large_2l_v2' .
+jobdispatch --repeat_jobs=140 --torque --gpu --env=THEANO_FLAGS=device=gpu,floatX=float32,force_device=True jobman sql 'postgresql://gulcehrc@opter.iro.umontreal.ca/gulcehrc_db?table=powerup_tfd_1layer_finer_large_2l_v3' .

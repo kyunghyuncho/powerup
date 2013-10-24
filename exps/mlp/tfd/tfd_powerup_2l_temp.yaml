@@ -91,7 +91,7 @@
         },
         !obj:pylearn2.training_algorithms.sgd.MomentumAdjustor {
             start: 1,
-            saturate:300,
+            saturate: 300,
             final_momentum: %(final_mom)f
         },
         !obj:pylearn2.training_algorithms.sgd.LinearDecayOverEpoch {

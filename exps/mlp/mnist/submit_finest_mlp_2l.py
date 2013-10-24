@@ -1,0 +1,71 @@
+import os
+import argparse, fnmatch
+import numpy
+from jobman import DD, flatten, api0, sql
+from powconvnet.train_pow import experiment
+from pylearn2.utils.string_utils import preprocess
+
+def tfd(n_trials):
+    ri = numpy.random.random_integers
+
+    state = DD()
+    with open('mnist_powerup_temp_l2.yaml') as ymtmp:
+        state.yaml_string = ymtmp.read()
+
+    state.powerup_nunits = 240
+    state.powerup_npieces = 5
+
+    state.powerup_nunits2 = 240
+    state.powerup_npieces2 = 5
+
+    state.W_lr_scale = 0.04
+    state.p_lr_scale = 0.01
+    state.lr_rate = 0.1
+    state.init_mom = 0.5
+    state.final_mom = 0.5
+    state.decay_factor = 0.5
+    state.max_col_norm = 1.9365
+
+    state.save_path = './'
+
+    n_pieces = [2, 3, 4, 5]
+    n_units = [200, 240, 320, 360, 420, 480]
+
+    learning_rates = numpy.logspace(numpy.log10(0.09), numpy.log10(1.2), 60)
+    learning_rate_scalers = numpy.logspace(numpy.log10(0.1), numpy.log10(1), 50)
+    decay_factors =  numpy.logspace(numpy.log10(0.001), numpy.log10(0.06), 40)
+    max_col_norms = [1.8365, 1.9365, 2.1365, 2.2365, 2.3486]
+
+    ind = 0
+    TABLE_NAME = "powerup_mnist_finest_large_2l"
+    db = api0.open_db('postgresql://gulcehrc@opter.iro.umontreal.ca/gulcehrc_db?table=' + TABLE_NAME)
+
+    for i in xrange(n_trials):
+        state.lr_rate = learning_rates[ri(learning_rates.shape[0]) - 1]
+
+        state.powerup_nunits = n_units[ri(len(n_units)) - 1]
+        state.powerup_npieces = n_pieces[ri(len(n_pieces) - 1)]
+
+        state.powerup_nunits2 = state.powerup_nunits
+        state.powerup_npieces2 = state.powerup_npieces
+
+        state.W_lr_scale = numpy.random.uniform(low=0.09, high=1.0)
+        state.p_lr_scale = numpy.random.uniform(low=0.09, high=1.0)
+
+        state.init_mom = numpy.random.uniform(low=0.3, high=0.6)
+        state.final_mom = numpy.random.uniform(low=state.init_mom + 0.1, high=0.9)
+        state.decay_factor = decay_factors[ri(len(decay_factors)) - 1]
+        state.max_col_norm = max_col_norms[ri(len(max_col_norms)) - 1]
+
+        alphabet = list('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789')
+        state.save_path = './'
+        state.save_path += ''.join(alphabet[:7]) + '_'
+        sql.insert_job(experiment, flatten(state), db)
+        ind += 1
+
+    db.createView(TABLE_NAME + '_view')
+    print "{} jobs submitted".format(ind)
+
+if __name__ == "__main__":
+    tfd(40)
+

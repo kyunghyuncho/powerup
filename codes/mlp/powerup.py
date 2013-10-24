@@ -16,9 +16,7 @@ from pylearn2.utils import py_integer_types
 from pylearn2.utils import sharedX
 
 class Powerup(Layer):
-    """
-        Powerup layer.
-    """
+
     def __init__(self,
                  layer_name,
                  num_units,
@@ -292,8 +290,9 @@ class Powerup(Layer):
 
         if self.randomize_pools:
             warnings.warn("randomize_pools makes get_weights multiply by the permutation matrix. "
-                    "If you call set_weights(W) and then call get_weights(), the return value will "
-                    "WP not W.")
+                          "If you call set_weights(W) and then call get_weights(), the return value will "
+                          "WP not W.")
+
             P = self.permute.get_value()
             return np.dot(W,P)
 
@@ -418,7 +417,8 @@ class Powerup(Layer):
             if not isinstance(state_below, tuple):
                 for sb in get_debug_values(state_below):
                     if sb.shape[0] != self.dbm.batch_size:
-                        raise ValueError("self.dbm.batch_size is %d but got shape of %d" % (self.dbm.batch_size, sb.shape[0]))
+                        raise ValueError("self.dbm.batch_size is %d but got shape of %d" % (self.mlp.batch_size, sb.shape[0]))
+
                     assert reduce(lambda x,y: x * y, sb.shape[1:]) == self.input_dim
 
             state_below = self.input_space.format_as(state_below, self.desired_space)
@@ -442,23 +442,20 @@ class Powerup(Layer):
 
         z_pools = z.reshape((z.shape[0], self.num_units, self.pool_size))
 
-        #pT = abs(T.log(abs(self.p.dimshuffle('x', 0, 'x'))))
         pT = abs(self.p.dimshuffle('x', 0, 'x')) + 1
-        #pT = T.exp(self.p.dimshuffle('x', 0, 'x'))
 
         if self.relu:
             z_pools = T.maximum(z_pools, 0)
             z_pools = z_pools**pT
         else:
-            z_pools = abs(z_pools)**pT
+            #z_pools = T.maximum(abs(z_pools), 1e-9)
+            z_pools = abs(z_pools) + 1e-10
+            z_pools = z_pools**pT
 
         if self.normalize:
             z_summed_pools = (1. / self.pool_size) * T.sum(z_pools, axis=2)
         else:
             z_summed_pools = T.sum(z_pools, axis=2)
-
-        #pT = abs(self.p.dimshuffle('x', 0))
-        #pT = abs(T.log(abs(self.p.dimshuffle('x', 0))))
 
         power_in = self.p.dimshuffle('x', 0)
         if self.use_exp:
@@ -466,6 +463,7 @@ class Powerup(Layer):
         else:
             pT = abs(power_in) + 1
 
+        #z_summed_pools = T.maximum(z_summed_pools, 1e-8)
         z_summed_pools = z_summed_pools**(1./pT)
 
         if self.upper_bound is not None:
