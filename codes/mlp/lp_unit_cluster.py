@@ -15,7 +15,7 @@ from pylearn2.space import VectorSpace
 from pylearn2.utils import py_integer_types
 from pylearn2.utils import sharedX
 
-class Powerup(Layer):
+class LpUnitCluster(Layer):
 
     def __init__(self,
                  layer_name,
@@ -38,7 +38,7 @@ class Powerup(Layer):
                  relu = False,
                  centered_bias = False,
                  power_activ = "softplus",
-                 uniform_p_range = (1.5, 9.0),
+                 uniform_p_range = (1.2, 8.0),
                  add_noise = False,
                  post_bias = False,
                  p_lr_scale = None,
@@ -88,7 +88,7 @@ class Powerup(Layer):
         """
 
         assert p_sampling_mode in ["uniform", "normal"]
-        assert power_activ in ["rect", "exp", "softplus", "sqr", "softhalf"]
+        assert power_activ in ["rect", "exp", "softplus", "sqr"]
         assert type(uniform_p_range) == tuple
 
         detector_layer_dim = num_units * num_pieces
@@ -110,9 +110,11 @@ class Powerup(Layer):
         self.__dict__.update(locals())
 
         del self.self
+        self.rng = np.random.RandomState(12435)
 
         if self.centered_bias:
             self.c = sharedX(np.zeros((self.detector_layer_dim,)), name=layer_name + "_c")
+            #self.c = sharedX(self.rng.uniform(low=-0.01, high=0.01, size=(self.detector_layer_dim,)), name=layer_name + "_c")
 
         if not self.post_bias:
             self.b = sharedX( np.zeros((self.detector_layer_dim,)) + init_bias, name = layer_name + '_b')
@@ -144,7 +146,10 @@ class Powerup(Layer):
             softplus(.) + 1 is between min and max.
         """
         rng = np.random.RandomState(12435)
-        p_vals = np.log(np.exp(rng.uniform(low=min, high=max, size=(self.num_units,))-1)-1)
+        if self.power_activ == "softplus":
+            p_vals = np.log(np.exp(rng.uniform(low=min, high=max, size=(self.num_units,))-1)-1)
+        else:
+            p_vals = np.sqrt(rng.uniform(low=min, high=max, size=(self.num_units,))-1)
         return p_vals
 
     def get_log_p(self, mean=None, std=None):
@@ -152,10 +157,8 @@ class Powerup(Layer):
         assert mean >= 1.0, "Mean should be greater than 1."
         if self.power_activ == "softplus":
             p_vals = np.log(rng.normal(loc=np.exp(mean-1), scale=std, size=(self.num_units,)) - 1)
-        elif self.power_activ == "exp":
-            p_vals = rng.normal(loc=np.log(mean-1), scale=std, size=(self.num_units,))
         else:
-            p_vals = np.sqrt(rng.normal(loc=mean, scale=std, size=(self.num_units,)) - 1)
+            p_vals = np.sqrt(rng.normal(loc=mean, scale=std, size=(self.num_units,))-1)
         #p_vals = np.log(np.exp(rng.normal(loc=mean, scale=std, size=(self.num_units,))-1) - 1)
         return p_vals
 
@@ -163,20 +166,20 @@ class Powerup(Layer):
         if not hasattr(self, 'W_lr_scale'):
             self.W_lr_scale = None
 
-        if not hasattr(self, 'b_lr_scale'):
-            self.b_lr_scale = None
+        #if not hasattr(self, 'b_lr_scale'):
+        #    self.b_lr_scale = None
 
         if not hasattr(self, 'p_lr_scale'):
             self.p_lr_scale = None
 
         rval = OrderedDict()
 
-        if self.W_lr_scale is not None:
-            W, = self.transformer.get_params()
-            rval[W] = self.W_lr_scale
+        #if self.W_lr_scale is not None:
+        #    W, = self.transformer.get_params()
+        #    rval[W] = self.W_lr_scale
 
-        if self.b_lr_scale is not None:
-            rval[self.b] = self.b_lr_scale
+        #if self.b_lr_scale is not None:
+        #    rval[self.b] = self.b_lr_scale
 
         if self.p_lr_scale is not None:
             rval[self.p] = self.p_lr_scale
@@ -284,8 +287,8 @@ class Powerup(Layer):
         rval = self.transformer.get_params()
         assert not isinstance(rval, set)
         rval = list(rval)
-        assert self.b not in rval
-        rval.append(self.b)
+        #assert self.b not in rval
+        #rval.append(self.b)
         assert self.p not in rval
         rval.append(self.p)
 
@@ -470,8 +473,6 @@ class Powerup(Layer):
             pT = T.maximum(power_in, 1)
         elif self.power_activ == "softplus":
             pT = T.nnet.softplus(power_in) + 1
-        elif self.power_activ == "softhalf":
-            pT = T.log(T.exp(power_in) + 0.5) + 1.0
         elif self.power_activ == "sqr":
             pT = T.sqr(power_in) + 1
         else:
@@ -481,7 +482,7 @@ class Powerup(Layer):
     def fprop(self, state_below):
         #Implements (\sum_i^T 1/T |W_i x|^{p_j} )^(1/p_j)
         self.input_space.validate(state_below)
-        epsilon = 1e-10
+        epsilon = 1e-11
 
         if self.requires_reformat:
             if not isinstance(state_below, tuple):
@@ -493,9 +494,10 @@ class Powerup(Layer):
             state_below = self.input_space.format_as(state_below, self.desired_space)
 
         if not self.post_bias:
-            z = self.transformer.lmul(state_below) + self.b
+            z = state_below
+            #+ self.b
         else:
-            z = self.transformer.lmul(state_below)
+            z = state_below
 
         if not hasattr(self, 'randomize_pools'):
             self.randomize_pools = False
@@ -509,10 +511,16 @@ class Powerup(Layer):
         if not hasattr(self, 'min_zero'):
             self.min_zero = False
 
+        z = z.dimshuffle('x', 0, 1) #z.reshape((1, self.batch_size, self.pool_size))
+        #z = z.dimshuffle(1, 0, 2)#z.reshape(self.batch_size, self.pool_size)
+        z_pools = T.repeat(z, repeats=self.num_units, axis=0)
+        z_pools = z_pools.dimshuffle(1, 0, 2)#z.reshape(self.batch_size, self.pool_size)
+
         #Reshape the presynaptic activation to a 3D tensor. Such that the first
         #dimension is the batch size, second dimension corresponds to number of
         #hidden units and the third dimension is for the size of the pool.
-        z_pools = z.reshape((z.shape[0], self.num_units, self.pool_size))
+        #z_pools = z.reshape((self.num_units, self.batch_size, self.pool_size))
+        #z_pools = z_pools.dimshuffle(1, 0, 2)
 
         #Center the pools
         if self.centered_bias:
@@ -556,8 +564,8 @@ class Powerup(Layer):
         else:
             a = z_summed_pools
 
-        if self.post_bias:
-            a = a + self.b
+        #if self.post_bias:
+        #    a = a + self.b
 
         return a
 
